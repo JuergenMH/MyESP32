@@ -1,0 +1,28 @@
+In Arbeit
+---------
+  
+Offene Punkte / ToDos
+---------------------
+  - Das Management der Zeit, d.h. Priorität NTP, dann RTC, dann Systemzeit
+  - Recovery, wenn das WLAN temporär ausfällt
+  - Zugang zum Konfigurationsmenü aus der Hauptschleife heraus
+  - Der Beispielcode für das Dimmen funktioniert nicht stabil, aktuell auskommentiert
+  - Überwachung und Anzeige von NTP-Funktonalität
+  - Automatische Sommer- und Winterzeitumstellung
+  - Schön wäre, wenn die Displayauswahl auch über die Konfiguration ginge;
+    Aktuell wird das über ein #define abgedeckt, was neu compilieren bedeutet
+  - Die Dimm-Funktion funktionert nicht und ist daher aktuell auskommentiert (MyOLED.ino)
+  - Feuchteanzeige ist falsch; Temperatur aber OK => 
+    Vermutlich wird der Sensor nicht geheizt, was für eine korrekte Feuchteanzeige erforderlich ist.
+  - Es fehlt noch der Code für den alternativen Sensor BM380
+  
+  
+
+Erledigt
+--------
+  - Support von 2 Displaygrößen
+  - Das Zeichnen von Bitmaps funktioniert nicht.
+  - Es fehlen die führenden Nullen bei Stunde, Minute, Sekunde
+  - Grafikelement für WLAN und RTC
+  - Display #2 (klein) muss noch getestet werden
+  
