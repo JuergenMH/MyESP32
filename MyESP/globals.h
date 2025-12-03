@@ -166,8 +166,8 @@ const Config_s DefaultConfig =  // used on empty or invalid EEPROM
 {
   0xdead,                       // magic number
   1,                            // WLAN is enabled
-  "DN2022",                     // WLAN SSID home WLAN
-  "CDoummpmnntoeprf22",         // WLAN PWD 
+  "YourSSID",                   // WLAN SSID home WLAN
+  "YourWLANPWD",                // WLAN PWD 
   1,                            // NTP is enabled
   60000,                        // NTP update interval ever 60s
   3600,                         // 3600 for european standard time, Berlin
