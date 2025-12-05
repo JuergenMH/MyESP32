@@ -89,6 +89,21 @@ void DisplayIPAddress(void)
 }
 
 // ----------------------------------------------------------------------------
+// The main application is a standard arduino style application triggert by 
+// one software timer. This application runs in addition to the background
+// tasks handled by the system scheduler
+// ----------------------------------------------------------------------------
+void MainApplication(void)        // visible user application
+{
+    display.clearDisplay();       // first step display memory clear
+    DisplayTempAndHumidity();     // update temperature and humdity
+    DisplayTime();                // update the time
+    DrawBitmaps();                // all bitmaps in the upper area
+    DisplayIPAddress();           // display IP on big display and if WLAN is connectd
+    display.display();            // last step: update the display with all the new stuff
+}
+
+// ----------------------------------------------------------------------------
 void setup() 
 {
   Wire.begin(I2C_SDA, I2C_SCL);
@@ -101,7 +116,8 @@ void setup()
   MyRTC_Init();             // Init DS3231 RTC; get NTP time of possible  
   MySHT31_Init();           // SHT31 Temperature and humidity module    
   MySystem_Init();          // OS HW Timer configuration
-  MyOLED_Init();
+  MyOLED_Init();            // initialise the configured OLED
+  MyTimeHandler_Init();     // initialise the background time handler
   MySystem_StartTimer();    // OS HW Timer start
   SPLF(HelloStr2);          // setup finished
 }
@@ -109,16 +125,13 @@ void setup()
 // ----------------------------------------------------------------------------
 void loop() 
 {
-  MySystem_Function();
+  MySystem_Function();            // SW Timer, OS, scheduler
+  MyTimeHandler_Function();       // logical time handler
+  
   if (0 == SW_Timer_1)            // SW Timer elapsed?
   {
     SW_Timer_1 = 1000;            // reload to 1000ms
-    display.clearDisplay();       // first step display memory clear
-    DisplayTempAndHumidity();     // update temperature and humdity
-    DisplayTime();                // update the time
-    DrawBitmaps();                // all bitmaps in the upper area
-    DisplayIPAddress();           // display IP on big display and if WLAN is connectd
-    display.display();            // last step: update the display with all the new stuff
+    MainApplication();            // application running independ from the tasks
   }
 }
 

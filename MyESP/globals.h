@@ -139,11 +139,12 @@ typedef struct
 } TmEntryS;
 
 typedef struct
-{
-  TmEntryS NTPTime;
-  TmEntryS RTCTime;
-  TmEntryS SystemTime;
-} MyTimeS;
+{                               // 
+  TmEntryS ESPTime;             // written by time handler, read from ESP timer (epoc)
+  TmEntryS NTPTime;             // time written by NTP handler 
+  TmEntryS RTCTime;             // written by the time handler, read from the RTC 
+  TmEntryS SystemTime;          // result by the time handler, this is the time the application should use!
+} MyTimeS;                      // this ist the time the application shoud u
 
 typedef struct                  // configuration data definition
 {
@@ -191,8 +192,8 @@ enum
 {
   WLAN_NotConnected,            // not connected on startup
   WLAN_ConnectionTimeout,       // cnnection failed with timeout
-  WLAN_Connected                // EEPROM seems to be empty
-} WLANState = WLAN_NotConnected;// ;-)
+  WLAN_Connected                // ;-)
+} WLANState = WLAN_NotConnected;// global WLAN state
 
 const uint16_t ConfigLen     = sizeof DefaultConfig;
 const uint16_t MyMagicNumber = 0xdead;
