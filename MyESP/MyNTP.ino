@@ -28,7 +28,7 @@ void MyNTP_ReadTime()
 }
 
 // ----------------------------------------------------------------------------
-void MyNTP_Init()
+void MyNTPHandler_Init()
 { 
   uint16_t MyOffset;
   if ((NTP_ENABLED) && (WLAN_CONNECTED))
@@ -47,6 +47,11 @@ void MyNTP_Init()
     timeClient.setUpdateInterval(NTP_PERIOD);   // time update interval set
     MyNTP_PrintTime();                          // final echo NTP time if not silentmode 
   }
+}
+
+// ----------------------------------------------------------------------------
+void MyNTPHandler_Function()
+{ 
 }
 
 // ----------------------------------------------------------------------------

@@ -57,6 +57,13 @@ void MySystem_StartTimer(void)
 }
 
 // ----------------------------------------------------------------------------
+void MySystem_StopTimer(void)
+{
+  // start timer with 1KHz, autoreload, endless
+  timerAlarm(timer, 0, false, 0);           
+}
+
+// ----------------------------------------------------------------------------
 void MySystem_Function(void)                        // system background functions
 {
   if (xSemaphoreTake(timerSemaphore, 0) == pdTRUE)  // timer isr occured?

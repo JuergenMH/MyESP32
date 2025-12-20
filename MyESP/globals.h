@@ -205,7 +205,6 @@ union                           // to hold configuration data set
 } ConfigUnion;
 
 // some macros for easy union member access
-
 #define MAGIC_NUMBER    ConfigUnion.ActConfig.MagicNumber
 #define WLAN_ENABLED    ConfigUnion.ActConfig.WlanEnabled
 #define WLAN_SSID       ConfigUnion.ActConfig.WlanSsid
@@ -219,9 +218,12 @@ union                           // to hold configuration data set
 #define BME280_ENABLED  ConfigUnion.ActConfig.BME280Enabled
 #define SSD1306_ENABLED ConfigUnion.ActConfig.SSD1306Enabled
 #define CHECKSUM        ConfigUnion.ActConfig.Checksum
-
 #define WLAN_CONNECTED  WLANState == WLAN_Connected
 #define NTP_SERVER      "pool.ntp.org"
+
+#define STRG_X          24  // used for background serial handling
+#define STRG_C          03
+
 
 // global variables 
 unsigned int      SW_Timer_1 = 0;

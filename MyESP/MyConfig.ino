@@ -58,7 +58,7 @@ void ReadEEProm(void)       // read EEPROM to config data union
       {
         ConfigState = EE_Valid;
         #ifndef SilentMode
-          SP("EEProm content valid!");
+          SPLF("EEProm content valid!");
         #endif  
       }
       else

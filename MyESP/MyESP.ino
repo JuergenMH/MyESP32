@@ -89,30 +89,17 @@ void DisplayIPAddress(void)
 }
 
 // ----------------------------------------------------------------------------
-// The main application is a standard arduino style application triggert by 
-// one software timer. This application runs in addition to the background
-// tasks handled by the system scheduler
+// System setup
+// running from arduino setup() and in case of user request
 // ----------------------------------------------------------------------------
-void MainApplication(void)        // visible user application
+void SystemSetup(void)
 {
-    display.clearDisplay();       // first step display memory clear
-    DisplayTempAndHumidity();     // update temperature and humdity
-    DisplayTime();                // update the time
-    DrawBitmaps();                // all bitmaps in the upper area
-    DisplayIPAddress();           // display IP on big display and if WLAN is connectd
-    display.display();            // last step: update the display with all the new stuff
-}
-
-// ----------------------------------------------------------------------------
-void setup() 
-{
-  Wire.begin(I2C_SDA, I2C_SCL);
-  Serial.begin(115200);
-  delay(2000);              // establish serial monitor
+  SPLF("");                 // ensure to start in a new line..
   SPLF(HelloStr1);          // and give welcome message and version
   HandleConfiguration();    // Read configuration, start configurator if necessary
-  MyWifi_Init();            // Connect WiFi in case of WiFi is enabled
-  MyNTP_Init();             // Establish NTP serive WLAN connected and NTP enabled
+  MyWifiHandler_Init();     // Connect WiFi in case of WiFi is enabled
+  MyNTPHandler_Init();      // Establish NTP serive WLAN connected and NTP enabled
+  MyTimeHandler_Init();     // init function of logical time handler
   MyRTC_Init();             // Init DS3231 RTC; get NTP time of possible  
   MySHT31_Init();           // SHT31 Temperature and humidity module    
   MySystem_Init();          // OS HW Timer configuration
@@ -123,15 +110,74 @@ void setup()
 }
 
 // ----------------------------------------------------------------------------
+// The main application is a standard arduino style application triggert by 
+// one software timer. This application runs in addition to the background
+// tasks handled by the system scheduler
+// the background is executed if the MainApplication is not running
+// ----------------------------------------------------------------------------
+void MainApplication(void)        // visible user application
+{
+  display.clearDisplay();       // first step display memory clear
+  DisplayTempAndHumidity();     // update temperature and humdity
+  DisplayTime();                // update the time
+  DrawBitmaps();                // all bitmaps in the upper area
+  DisplayIPAddress();           // display IP on big display and if WLAN is connectd
+  display.display();            // last step: update the display with all the new stuff
+}
+
+// ----------------------------------------------------------------------------
+void MainBackground(void)       // executed if main is not running
+{
+  uint8_t UserInput;            // user input on serial console
+  if (Serial.available())       // check character received 
+  {
+    UserInput = Serial.read();  // get character from user
+    switch (UserInput)
+    {
+      case STRG_C:
+        MySystem_StopTimer();           // first: stop hw timer
+        MyConfig_PerformConfigDialog(); // no execute configuration
+        MyConfig_ReadConfig();          // read eeprom againg
+        MySystem_StartTimer();          // enable HW timer again
+        break;
+      case STRG_X: 
+        MySystem_StopTimer();           // first: stop hw timer
+        SystemSetup();                  // then call all other setup stuff
+        break;
+    }
+  }
+}
+
+void setup() 
+{
+  Wire.begin(I2C_SDA, I2C_SCL);
+  Serial.begin(115200);
+  delay(2000);              // establish serial monitor
+  SystemSetup();            // call all other setup stuff
+}
+
+// ----------------------------------------------------------------------------
 void loop() 
 {
-  MySystem_Function();            // SW Timer, OS, scheduler
-  MyTimeHandler_Function();       // logical time handler
-  
-  if (0 == SW_Timer_1)            // SW Timer elapsed?
+  uint8_t MainSchedule = 0;
+  MySystem_Function();                          // SW Timer, OS, scheduler 
+  if (0 == SW_Timer_1)                          // SW Timer elapsed?
   {
-    SW_Timer_1 = 1000;            // reload to 1000ms
-    MainApplication();            // application running independ from the tasks
+    SW_Timer_1 = 200;                           // reload to main tic = 200ms
+    switch (MainSchedule)
+    {
+      case 0: MyWifiHandler_Function(); break;  // handle Wifi background 
+      case 1: MyNTPHandler_Function();  break;  // handle NTP background
+      case 2: MyTimeHandler_Function(); break;  // handle logical time
+      case 3: break;
+      case 4:  MainApplication(); break;        // arduino style main application
+    }
+    if (5 == ++MainSchedule)                    // perform main scheduler pointer
+      MainSchedule = 0;
+  }
+  else
+  {
+    MainBackground();                           // if nothing else to do ...
   }
 }
 

@@ -1,9 +1,13 @@
 In Arbeit
 ---------
   
+In Arbeit
+---------
+
+  - Timer Handler, das Management der Zeit, d.h. Priorität NTP, dann RTC, dann Systemzeit
+
 Offene Punkte / ToDos
 ---------------------
-  - Das Management der Zeit, d.h. Priorität NTP, dann RTC, dann Systemzeit
   - Recovery, wenn das WLAN temporär ausfällt
   - Zugang zum Konfigurationsmenü aus der Hauptschleife heraus
   - Der Beispielcode für das Dimmen funktioniert nicht stabil, aktuell auskommentiert
@@ -25,4 +29,6 @@ Erledigt
   - Es fehlen die führenden Nullen bei Stunde, Minute, Sekunde
   - Grafikelement für WLAN und RTC
   - Display #2 (klein) muss noch getestet werden
+  - Aufruf Configuration menu aus der Konsole Idee: Strg+C (wie config), Strg+X (restart)
+    Implementiert; scheint zu funktionieren; noch offen sind mögliche Dreckeffekte
   

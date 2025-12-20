@@ -37,7 +37,8 @@ void MyRTC_Init()                           // copy NTC time to RTC if possible
   if ((RTC_ENABLED) && (NTP_ENABLED ) && (WLAN_CONNECTED))
   {
     #ifndef SilentMode
-      SPLF("\nInit DS3231 RTC with NTP time");
+      SPLF(" ");
+      SPLF("Init DS3231 RTC with NTP time");
     #endif  
     MyRTC.setClockMode(false);              // set to 24h
     MyRTC.setHour(MyTime.NTPTime.Hour);     // h,m,s from NTP

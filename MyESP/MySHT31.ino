@@ -32,7 +32,8 @@ void MySHT31_Init()                         // Init device hardware
   if (SHT31_ENABLED) 
   {
     #ifndef SilentMode
-      SP("\nInit SHT31 temperature and humidity module: ");
+      SPLF(" ");
+      SP("Init SHT31 temperature and humidity module: ");
     #endif  
     if (!sht31.begin(0x44))
     {

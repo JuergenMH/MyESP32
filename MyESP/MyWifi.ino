@@ -5,7 +5,13 @@
 const uint16_t DelayBetweenConnects = 1000;   // ms
 const uint16_t ConnectTimeout       = 10000;  // = 10s
 
-void MyWifi_Init()
+// ----------------------------------------------------------------------------
+void MyWifiHandler_Function()   // to be called cyclic in background
+{
+}
+
+// ----------------------------------------------------------------------------
+void MyWifiHandler_Init()
 {
   unsigned int ConnectTime = 0;
   if (WLAN_ENABLED)
@@ -38,3 +44,5 @@ void MyWifi_Init()
     }
   }
 }
+
+// ----------------------------------------------------------------------------
