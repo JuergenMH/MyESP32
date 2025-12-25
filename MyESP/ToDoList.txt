@@ -1,13 +1,12 @@
-In Arbeit
----------
+In Arbeit / nächster Punkt
+--------------------------
   
-  - Timer Handler, das Management der Zeit, d.h. Priorität NTP, dann RTC, dann Systemzeit
-    => fast fertig; offen: ESP-Zeit als zweite Rückfallebene und ausführlicher Test
-
+  - Recovery, wenn das WLAN temporär ausfällt
+    Wifi Handler
+    
 Offene Punkte / ToDos
 ---------------------
-  - Anzeige der Zeitquelle, d.h. RTC, NTP oder ESP-Zeit
-  - Recovery, wenn das WLAN temporär ausfällt
+  - Test Time- und NTP Handler
   - Der Beispielcode für das Dimmen funktioniert nicht stabil, aktuell auskommentiert
   - Automatische Sommer- und Winterzeitumstellung
   - Schön wäre, wenn die Displayauswahl auch über die Konfiguration ginge;
@@ -20,6 +19,8 @@ Offene Punkte / ToDos
 
 Erledigt
 --------
+  - Anzeige der Zeitquelle, d.h. RTC, NTP oder ESP-Zeit
+  - Timer Handler, das Management der Zeit, d.h. Priorität NTP, dann RTC, dann Systemzeit
   - Überwachung von NTP-Funktonalität (NTP Handler, Time Handler)
   - Zugang zum Konfigurationsmenü aus der Hauptschleife heraus (STRG + C)
   - Support von 2 Displaygrößen
