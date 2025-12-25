@@ -32,18 +32,24 @@ void MyRTC_ReadTime()                       // copy RTC data to data struct
 }
 
 // ----------------------------------------------------------------------------
-void MyRTC_Init()                           // copy NTC time to RTC if possible
-{ 
-  if ((RTC_ENABLED) && (NTP_ENABLED ) && (WLAN_CONNECTED))
-  {
-    #ifndef SilentMode
-      SPLF(" ");
-      SPLF("Init DS3231 RTC with NTP time");
-    #endif  
+void MyRTC_Copy_NTP_To_RTC(void)            // NTP data => RTC data
+{
     MyRTC.setClockMode(false);              // set to 24h
     MyRTC.setHour(MyTime.NTPTime.Hour);     // h,m,s from NTP
     MyRTC.setMinute(MyTime.NTPTime.Minute);
     MyRTC.setSecond(MyTime.NTPTime.Second);
+}
+
+// ----------------------------------------------------------------------------
+void MyRTC_Init()                           // copy NTC time to RTC if possible
+{ 
+  if ((RTC_ENABLED) && (NTP_ENABLED ) && (WLAN_CONNECTED) && (NTP_Online))
+  {
+    MyRTC_Copy_NTP_To_RTC();                // inital RTC setup
+    #ifndef SilentMode
+      SPLF(" ");
+      SPLF("Init DS3231 RTC with NTP time");
+    #endif  
     MyRTC_PrintTime();                      // final: echo RTC time if not silentmode 
   }
 }

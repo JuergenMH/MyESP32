@@ -32,7 +32,6 @@ void HandleConfiguration(void)
 void DisplayTempAndHumidity(void)
 {
   char Tmp[5], Hum[5];
-  
   MySHT31_ReadTValues();                                        // update data
   display.setTextSize(1);                                       // medium font size  
   display.drawLine(Lin_XStrt, Lin_YAD, 
@@ -59,13 +58,12 @@ void GetStrWLZ(char* ValueString, uint8_t Value, int x, int y)
 void DisplayTime(void)
 {
   char Hr[3], Min[3], Sec[3];
-  MyNTP_ReadTime();                                         // update date
   display.setTextSize(TSize);                               // medium font size
   display.drawLine(Lin_XStrt, Lin_YTim, 
                    Lin_XLen,  Lin_YTim, Lin_Col);           // draw line above 
-  GetStrWLZ(Hr,  MyTime.NTPTime.Hour,   TH_XPos, TH_YPos);  // display hour
-  GetStrWLZ(Min, MyTime.NTPTime.Minute, TM_XPos, TM_YPos);  // display minute
-  GetStrWLZ(Sec, MyTime.NTPTime.Second, TS_XPos, TS_YPos);  // display second
+  GetStrWLZ(Hr,  AppHour,   TH_XPos, TH_YPos);              // display hour
+  GetStrWLZ(Min, AppMinute, TM_XPos, TM_YPos);              // display minute
+  GetStrWLZ(Sec, AppSecond, TS_XPos, TS_YPos);              // display second
 }
 
 // ----------------------------------------------------------------------------
@@ -117,6 +115,7 @@ void SystemSetup(void)
 // ----------------------------------------------------------------------------
 void MainApplication(void)        // visible user application
 {
+  // SPLF("Main Application running"); // for debug only ...
   display.clearDisplay();       // first step display memory clear
   DisplayTempAndHumidity();     // update temperature and humdity
   DisplayTime();                // update the time
@@ -159,7 +158,6 @@ void setup()
 // ----------------------------------------------------------------------------
 void loop() 
 {
-  uint8_t MainSchedule = 0;
   MySystem_Function();                          // SW Timer, OS, scheduler 
   if (0 == SW_Timer_1)                          // SW Timer elapsed?
   {
@@ -170,10 +168,12 @@ void loop()
       case 1: MyNTPHandler_Function();  break;  // handle NTP background
       case 2: MyTimeHandler_Function(); break;  // handle logical time
       case 3: break;
-      case 4:  MainApplication(); break;        // arduino style main application
+      case 4: MainApplication(); break;         // arduino style main application
     }
-    if (5 == ++MainSchedule)                    // perform main scheduler pointer
+    //MainSchedule++;                           // next Main FSM state
+    if (++MainSchedule == 5)                    // scheduler round robin
       MainSchedule = 0;
+    //Serial.println(MainSchedule) ;            // for debugging only
   }
   else
   {

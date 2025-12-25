@@ -129,7 +129,8 @@ static const unsigned char PROGMEM RTC_Logo[2*WL_HEIGHT] =
 };
 
 // ----------------------------------------------------------------------------
-// global variables and definitions
+// Global variables and definitions
+// 1. time related
 // ----------------------------------------------------------------------------
 typedef struct
 {
@@ -138,14 +139,31 @@ typedef struct
   uint8_t Second;
 } TmEntryS;
 
-typedef struct
-{                               // 
-  TmEntryS ESPTime;             // written by time handler, read from ESP timer (epoc)
-  TmEntryS NTPTime;             // time written by NTP handler 
-  TmEntryS RTCTime;             // written by the time handler, read from the RTC 
-  TmEntryS SystemTime;          // result by the time handler, this is the time the application should use!
-} MyTimeS;                      // this ist the time the application shoud u
+typedef enum {
+  TimeSource_None,
+  TimeSource_NTP,
+  TimeSource_RTC,
+  TimeSource_ESP
+} TimeSourceE;      
 
+struct                          // THis struct is for all time related data
+{                               
+  TmEntryS      ESPTime;        // written by time handler,     read from ESP timer (epoc)
+  TmEntryS      NTPTime;        // time written by NTP handler, read from NTP service 
+  TmEntryS      RTCTime;        // written by the time handler, read from the RTC module 
+  TmEntryS      SystemTime;     // result by the time handler,  => this is the time the application should use!
+  TimeSourceE   TimeSource;     // current active source of application time 
+} MyTime;                       // struct only for one variable => no typedef
+
+#define AppHour     MyTime.SystemTime.Hour
+#define AppMinute   MyTime.SystemTime.Minute
+#define AppSecond   MyTime.SystemTime.Second
+#define AppTSource  MyTime.TimeSource
+
+// ----------------------------------------------------------------------------
+// Global variables and definitions
+// 2. configuration related
+// ----------------------------------------------------------------------------
 typedef struct                  // configuration data definition
 {
   uint16_t  MagicNumber;        // alays 0xdead
@@ -188,6 +206,10 @@ enum
   EE_Valid                      // ;-)
 } ConfigState = EE_NotRead;     // global config state
 
+// ----------------------------------------------------------------------------
+// Global variables and definitions
+// 3. WLAN and NTP related
+// ----------------------------------------------------------------------------
 enum                            
 {
   WLAN_NotConnected,            // not connected on startup
@@ -221,20 +243,30 @@ union                           // to hold configuration data set
 #define WLAN_CONNECTED  WLANState == WLAN_Connected
 #define NTP_SERVER      "pool.ntp.org"
 
-#define STRG_X          24  // used for background serial handling
-#define STRG_C          03
+WiFiUDP     ntpUDP;
+NTPClient   timeClient(ntpUDP, NTP_SERVER, (uint16_t)NTP_OFFSET, (uint16_t)NTP_PERIOD); 
 
+bool        NTP_Online = false;   // flag to signalize time handler NTP is online onr not
+bool        NTP_Updated = false;  // dito, new data available
+uint8_t     NTP_TimeOutCtr = 0;   // counter to detect online state
 
-// global variables 
-unsigned int      SW_Timer_1 = 0;
-MyTimeS           MyTime;
-WiFiUDP           ntpUDP;
-NTPClient         timeClient(ntpUDP, NTP_SERVER, (uint16_t)NTP_OFFSET, (uint16_t)NTP_PERIOD); 
-DS3231            MyRTC;
-Adafruit_SSD1306  display(OLED_WIDTH, OLED_HEIGHT, &Wire, -1);
-Adafruit_SHT31    sht31 = Adafruit_SHT31();
-float             MySHT31_Temperature;
-float             MySHT31_Humidity;
+// ----------------------------------------------------------------------------
+// Global variables and definitions
+// 4. Others
+// ----------------------------------------------------------------------------
+// used for background serial handling 
+#define STRG_X      24  // restart system
+#define STRG_W      23  // switch WLAN
+#define STRG_C      03  // call configuration menu
+
+unsigned int        SW_Timer_1 = 0;
+uint8_t             MainSchedule = 0; // arduino style scheduler in main loop
+
+DS3231              MyRTC;
+Adafruit_SSD1306    display(OLED_WIDTH, OLED_HEIGHT, &Wire, -1);
+Adafruit_SHT31      sht31 = Adafruit_SHT31();
+float               MySHT31_Temperature;
+float               MySHT31_Humidity;
 
 // ----------------------------------------------------------------------------
 //  end of include file

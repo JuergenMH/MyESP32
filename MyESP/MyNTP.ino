@@ -3,28 +3,14 @@
 // functions for NTP functions (RTC server over WLAN)
 // ----------------------------------------------------------------------------
 
-// ----------------------------------------------------------------------------
 void MyNTP_PrintTime()
 {
   #ifndef SilentMode
-    MyNTP_ReadTime();
     SP("NTP Time: "); 
     SP(MyTime.NTPTime.Hour);   SP(":"); 
     SP(MyTime.NTPTime.Minute); SP(":");
     SP(MyTime.NTPTime.Second); SP(" ");
   #endif
-}
-
-// ----------------------------------------------------------------------------
-void MyNTP_ReadTime()
-{
-  if ((NTP_ENABLED) && (WLAN_CONNECTED))
-  { 
-    timeClient.update();
-    MyTime.NTPTime.Hour   = timeClient.getHours();
-    MyTime.NTPTime.Minute = timeClient.getMinutes();
-    MyTime.NTPTime.Second = timeClient.getSeconds();
-  }
 }
 
 // ----------------------------------------------------------------------------
@@ -52,6 +38,30 @@ void MyNTPHandler_Init()
 // ----------------------------------------------------------------------------
 void MyNTPHandler_Function()
 { 
+  if ((NTP_ENABLED) && (WLAN_CONNECTED))
+  { 
+    if (timeClient.update())                    // check for NTP udpate available
+    {
+      NTP_Online     = true;                    // flag for timer handler: we are online
+      NTP_Updated    = true;                    // dito: new time data from NTP available
+      NTP_TimeOutCtr = 0;                       // error counter to be cleared
+      MyTime.NTPTime.Hour   = timeClient.getHours();
+      MyTime.NTPTime.Minute = timeClient.getMinutes();
+      MyTime.NTPTime.Second = timeClient.getSeconds();
+    }    
+    else
+    {                                           // no update, check for NTP timeout
+      if ((NTP_PERIOD/1000) < NTP_TimeOutCtr)
+      {
+        NTP_Online = false;                     // timeout reached
+      }
+      else
+      {                                         // no update but also no timeout
+        if (NTP_Online) NTP_TimeOutCtr++;       // increment error counter
+      }
+    }
+    // SP ("NTP Online: "); SPLF(NTP_Online);   // for debug purposes only
+  }  
 }
 
 // ----------------------------------------------------------------------------
