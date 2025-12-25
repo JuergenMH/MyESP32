@@ -109,10 +109,11 @@ static const unsigned char PROGMEM WiFi_Logo[2*WL_HEIGHT] =
   0b00000001,	0b10000000,
 };
 
-#define RTC_XSTART   20
-#define RTC_YSTART   1 
-#define RTC_HEIGHT   11
-#define RTC_WIDTH    16
+// Logos for time source
+#define TMS_XSTART   20
+#define TMS_YSTART   1 
+#define TMS_HEIGHT   11
+#define TMS_WIDTH    16
 static const unsigned char PROGMEM RTC_Logo[2*WL_HEIGHT] = 
 {
   0b11111111, 0b11111111,
@@ -128,6 +129,51 @@ static const unsigned char PROGMEM RTC_Logo[2*WL_HEIGHT] =
   0b11111111, 0b11111111
 };
 
+static const unsigned char PROGMEM NTP_Logo[2*WL_HEIGHT] = 
+{
+  0b10010111,	0b11011110,
+  0b11010001,	0b00010001,
+  0b11010001,	0b00010001,
+  0b10110001,	0b00011110,
+  0b10110001,	0b00010000,
+  0b10010001,	0b00010000,
+  0b00000000,	0b00000000,
+  0b11010000,	0b00011110,
+  0b01000011,	0b10101111,
+  0b01001010,	0b10101000,
+  0b01001010,	0b10100111,
+};
+
+static const unsigned char PROGMEM ESP_Logo[2*WL_HEIGHT] = 
+{
+  0b11110011,	0b10011110,
+  0b10000100,	0b01010001,
+  0b10000100,	0b01010001,
+  0b11110011,	0b10011110,
+  0b10000100,	0b01010000,
+  0b11110011,	0b11010000,
+  0b00000000,	0b00000000,
+  0b11101000,	0b00011110,
+  0b01000011,	0b10101111,
+  0b01001010,	0b10101000,
+  0b01001010,	0b10100111,
+};
+
+static const unsigned char PROGMEM CLR_Logo[2*WL_HEIGHT] = 
+{
+  0b00000000,	0b00000000,
+  0b00000000,	0b00000000,
+  0b00000000,	0b00000000,
+  0b00000000,	0b00000000,
+  0b00000000,	0b00000000,
+  0b00000000,	0b00000000,
+  0b00000000,	0b00000000,
+  0b00000000,	0b00000000,
+  0b00000000,	0b00000000,
+  0b00000000,	0b00000000,
+  0b00000000,	0b00000000,
+};
+
 // ----------------------------------------------------------------------------
 // Global variables and definitions
 // 1. time related
@@ -140,7 +186,7 @@ typedef struct
 } TmEntryS;
 
 typedef enum {
-  TimeSource_None,
+  TimeSource_NONE,
   TimeSource_NTP,
   TimeSource_RTC,
   TimeSource_ESP

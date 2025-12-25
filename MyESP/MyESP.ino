@@ -69,8 +69,26 @@ void DisplayTime(void)
 // ----------------------------------------------------------------------------
 void DrawBitmaps(void)
 {
-  display.drawBitmap(WL_XSTART,  WL_YSTART,  WiFi_Logo, WL_WIDTH,  WL_HEIGHT,  1);
-  display.drawBitmap(RTC_XSTART, RTC_YSTART, RTC_Logo,  RTC_WIDTH, RTC_HEIGHT, 1);
+  if (WLAN_CONNECTED)
+    display.drawBitmap(WL_XSTART,  WL_YSTART,  WiFi_Logo, WL_WIDTH,  WL_HEIGHT,  1);
+  else
+    display.drawBitmap(WL_XSTART,  WL_YSTART,  CLR_Logo, WL_WIDTH,  WL_HEIGHT,  1);
+
+  switch (AppTSource)
+  {
+    case TimeSource_NONE:
+      display.drawBitmap(TMS_XSTART,TMS_YSTART, CLR_Logo, TMS_WIDTH,TMS_HEIGHT, 1);
+      break;
+    case TimeSource_ESP:
+      display.drawBitmap(TMS_XSTART,TMS_YSTART, ESP_Logo, TMS_WIDTH,TMS_HEIGHT, 1);
+      break;
+    case TimeSource_NTP: 
+      display.drawBitmap(TMS_XSTART,TMS_YSTART, NTP_Logo, TMS_WIDTH,TMS_HEIGHT, 1);
+      break;
+    case TimeSource_RTC: 
+      display.drawBitmap(TMS_XSTART,TMS_YSTART, RTC_Logo, TMS_WIDTH,TMS_HEIGHT, 1);
+      break;
+  }
 }
 
 // ----------------------------------------------------------------------------

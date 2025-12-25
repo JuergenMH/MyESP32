@@ -9,8 +9,6 @@ void LoadAppTimeFromNTP(void)
   AppHour     = MyTime.NTPTime.Hour;
   AppMinute   = MyTime.NTPTime.Minute;
   AppSecond   = MyTime.NTPTime.Second;
-  AppTSource  = TimeSource_NTP;
-  // SPLF("App time update via NTP");
 }
 
 void LoadAppTimeFromRTC(void)
@@ -19,8 +17,6 @@ void LoadAppTimeFromRTC(void)
   AppHour     = MyTime.RTCTime.Hour;
   AppMinute   = MyTime.RTCTime.Minute;
   AppSecond   = MyTime.RTCTime.Second;
-  AppTSource  = TimeSource_RTC;
-  // SPLF("App time update via RTC");
 }
 
 void LoadAppTimeFromESP(void)
@@ -51,6 +47,7 @@ void MyTimeHandler_Function()   // to be called cyclic in background
 {
   if (NTP_Online)               // possible only if WLAN connected
   {
+    AppTSource = TimeSource_NTP;
     if (NTP_Updated)            // new time data from NTP available?
     {
       if (RTC_ENABLED)          // if RTC availabe, update the RTC now
@@ -69,7 +66,9 @@ void MyTimeHandler_Function()   // to be called cyclic in background
   else                          // NTP is offline
   {     
     GetBackupData();            // get data from RTC or ESP
+    AppTSource = TimeSource_RTC;
   }
+  //SP("Time source: "); SPLF(AppTSource);
 }
 
 // ----------------------------------------------------------------------------
